@@ -2,8 +2,24 @@
 pragma solidity ^0.8.9;
 
 contract Web3RSVP {
+
+    event NewEventCreated(
+        bytes32 eventID,
+        address creatorAddress,
+        uint256 eventTimestamp,
+        uint256 maxCapacity,
+        uint256 deposit,
+        string eventDataCID
+    );
+
+    event NewRSVO(bytes32 eventID, address attendeeAdress);
+
+    event ConfirmedAttendee(bytes32 eventID, address attendeeAddress);
+
+    event DepositePaidOut(bytes32 eventID);
+
     struct CreateEvent {
-        bytes32 eventID;
+        bytes32 eventId;
         string eventDataCID;
         address eventOwner;
         uint256 eventTimestamp;
@@ -113,7 +129,7 @@ contract Web3RSVP {
             }
         }
 
-        function withdrawUnclaimedDeposites(bytes32 eventId) external {
+        function withdrawUnclaimedDeposits(bytes32 eventId) external {
 
             //look up event 
             CreateEvent memory myEvent = idToEvent[eventId];
@@ -131,7 +147,7 @@ contract Web3RSVP {
             require(msg.sender == myEvent.eventOwner, "MUST BE EVENT OWNER");
 
             //calculate how many people didnt claim by comparing 
-            uint256 unclaimed = myEvent.comfirmedRSVPS.length - myEvent.claimedRSVPs.length;
+            uint256 unclaimed = myEvent.confirmedRSVPs.length - myEvent.claimedRSVPs.length;
 
             uint256 payout = unclaimed * myEvent.deposit;
 
