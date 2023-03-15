@@ -82,7 +82,7 @@ contract Web3RSVP {
             for (uint8 i = 0; i < myEvent.claimedRSVPs.length; i++) {
                 require(myEvent.claimedRSVPs[i] != attendee, "ALREADY CLAIMED");
             }
-
+            
             // require that deposits are not already claimed by the event owner
             require(myEvent.paidOut == false, "ALREADY PAID OUT");
 
