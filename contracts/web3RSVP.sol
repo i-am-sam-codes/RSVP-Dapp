@@ -12,7 +12,7 @@ contract Web3RSVP {
         string eventDataCID
     );
 
-    event NewRSVP(bytes32 eventID, address attendeeAdress);
+    event NewRSVP(bytes32 eventID, address attendeeAddress);
 
     event ConfirmedAttendee(bytes32 eventID, address attendeeAddress);
 
@@ -98,16 +98,40 @@ contract Web3RSVP {
             emit NewRSVP(eventId, msg.sender);
         }
 
-        function confirmAttendee(bytes32 eventId, address attendee) public {
+        function confirmAllAttendees(bytes32 eventId) external {
 
-            CreateEvent storage myEvent = idToEvent[eventId];
+            // look up event from out struct with the eventId
+            CreateEvent memory myEvent = idToEvent[eventId];
 
+            // make sure you require that msg.sender is the owner of the event
             require(msg.sender == myEvent.eventOwner, "NOT AUTHORIZED");
 
+            for (uint8 i = 0; i < myEvent.confirmedRSVPs.length; i++) {
+                confirmAttendee(eventId, myEvent.confirmedRSVPs[i]);
+            }
+        }
+
+        function confirmAttendee(bytes32 eventId, address attendee) public {
+            // look up event
+            CreateEvent storage myEvent = idToEvent[eventId];
+
+            // require msg.sender is the owner of event
+            require(msg.sender == myEvent.eventOwner, "NOT AUTHORIZED");
+
+            // require that attendee is in myEvent.confirmedRSVPs
             address rsvpConfirm;
 
             for (uint8 i = 0; i < myEvent.claimedRSVPs.length; i++) {
-                require(myEvent.claimedRSVPs[i] != attendee, "ALREADY CLAIMED");
+                if(myEvent.claimedRSVPs[i] == attendee){
+                    rsvpConfirm = myEvent.confirmedRSVPs[i];
+                }
+            }
+
+            require(rsvpConfirm == attendee, "NO RSVP TO CONFIRM");
+
+            // require that attendee is NOT in the claimedRSVPs list 
+            for (uint8 i = 0; i < myEvent.claimedRSVPs.length; i++) {
+               require(myEvent.confirmedRSVPs[i] != attendee, "ALREADY CLAIMED");
             }
 
             // require that deposits are not already claimed by the event owner
@@ -127,19 +151,6 @@ contract Web3RSVP {
             require(sent, "Failed to send Ether");
 
             emit ConfirmedAttendee(eventId, attendee);
-        }
-
-        function confirmAllAttendees(bytes32 eventId) external {
-
-            // look up event from out struct with the eventId
-            CreateEvent memory myEvent = idToEvent[eventId];
-
-            // make sure you require that msg.sender is the owner of the event
-            require(msg.sender == myEvent.eventOwner, "NOT AUTHORIZED");
-
-            for (uint8 i = 0; i < myEvent.confirmedRSVPs.length; i++) {
-                confirmAttendee(eventId, myEvent.confirmedRSVPs[i]);
-            }
         }
 
         function withdrawUnclaimedDeposits(bytes32 eventId) external {
