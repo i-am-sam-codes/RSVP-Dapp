@@ -49,6 +49,7 @@ contract Web3RSVP {
             claimedRSVPs,
             false
         );
+    }
 
         function createNewRSVP(bytes32 eventId) external payable {
 
@@ -64,11 +65,11 @@ contract Web3RSVP {
             );
 
             for (uint8 i = 0; i < myEvent.confirmedRSVPs.length; i++) {
-                require(myEvent.confirmedRSVPs[i] != msg.sender. "ALREADY CONFIRMED");
+                require(myEvent.confirmedRSVPs[i] != msg.sender, "ALREADY CONFIRMED");
             }
 
             myEvent.confirmedRSVPs.push(payable(msg.sender));
         }
 
-    }
+    
 }
