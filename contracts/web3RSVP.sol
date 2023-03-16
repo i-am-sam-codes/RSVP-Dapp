@@ -121,8 +121,8 @@ contract Web3RSVP {
             // require that attendee is in myEvent.confirmedRSVPs
             address rsvpConfirm;
 
-            for (uint8 i = 0; i < myEvent.claimedRSVPs.length; i++) {
-                if(myEvent.claimedRSVPs[i] == attendee){
+            for (uint8 i = 0; i < myEvent.confirmedRSVPs.length; i++) {
+                if(myEvent.confirmedRSVPs[i] == attendee){
                     rsvpConfirm = myEvent.confirmedRSVPs[i];
                 }
             }
@@ -131,7 +131,7 @@ contract Web3RSVP {
 
             // require that attendee is NOT in the claimedRSVPs list 
             for (uint8 i = 0; i < myEvent.claimedRSVPs.length; i++) {
-               require(myEvent.confirmedRSVPs[i] != attendee, "ALREADY CLAIMED");
+               require(myEvent.claimedRSVPs[i] != attendee, "ALREADY CLAIMED");
             }
 
             // require that deposits are not already claimed by the event owner
