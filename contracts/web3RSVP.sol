@@ -154,7 +154,6 @@ contract Web3RSVP {
         }
 
         function withdrawUnclaimedDeposits(bytes32 eventId) external {
-
             //look up event 
             CreateEvent memory myEvent = idToEvent[eventId];
 
@@ -170,7 +169,7 @@ contract Web3RSVP {
             // only the event owner can withdraw
             require(msg.sender == myEvent.eventOwner, "MUST BE EVENT OWNER");
 
-            //calculate how many people didnt claim by comparing 
+            // calculate how many people didnt claim by comparing 
             uint256 unclaimed = myEvent.confirmedRSVPs.length - myEvent.claimedRSVPs.length;
 
             uint256 payout = unclaimed * myEvent.deposit;
@@ -190,6 +189,4 @@ contract Web3RSVP {
 
             emit DepositsPaidOut(eventId);
         }
-
-    
 }
