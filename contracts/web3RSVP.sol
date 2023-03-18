@@ -52,7 +52,6 @@ contract Web3RSVP {
         address[] memory confirmedRSVPs;
         address[] memory claimedRSVPs;
 
-
         // this creates a new CreateEvent struct and adds it to the idToEvent mapping
         idToEvent[eventId] = CreateEvent(
             eventId,
